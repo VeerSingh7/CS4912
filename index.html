@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Computer Vision Portfolio - Veer Vardhan Singh</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
+
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
-    
+
     <!-- Firebase SDKs -->
     <script type="module" src="app.js"></script>
 </head>
+
 <body>
 
     <header>
-        <div class="logo">Veer<span class="highlight">Vardhan</span>Singh <span style="color:#666; font-weight:400; font-size: 0.9em; margin-left: 10px;">CS440</span></div>
+        <div class="logo">Veer<span class="highlight">Vardhan</span>Singh <span
+                style="color:#666; font-weight:400; font-size: 0.9em; margin-left: 10px;">CS440</span></div>
         <nav>
             <ul>
                 <li><a href="#exp1">Distortion</a></li>
@@ -36,27 +39,31 @@
     <main>
         <section class="hero">
             <h1>Seeing the World through Geometry</h1>
-            <p>A collection of photography experiments demonstrating core Computer Vision principles: Perspective, Projection, and Depth.</p>
+            <p>A collection of photography experiments demonstrating core Computer Vision principles: Perspective,
+                Projection, and Depth.</p>
         </section>
 
         <!-- Experiment 1 -->
         <section id="exp1">
             <h2 class="section-title">01. Perspective Distortion</h2>
-            <p class="section-desc">Analyzing how focal length affects facial feature proportions. The closer the camera, the more exaggerated the features appear due to perspective projection.</p>
-            
+            <p class="section-desc">Analyzing how focal length affects facial feature proportions. The closer the
+                camera, the more exaggerated the features appear due to perspective projection.</p>
+
             <div class="experiment-grid">
                 <article class="photo-card">
                     <img src="assets/images/face_close.png" alt="Close up distorted face">
                     <div class="photo-info">
                         <h3>Close Range (Wide Angle)</h3>
-                        <p>Subject captured from ~1ft away. Note the "bulbous" nose effect and receding ears relative to the face.</p>
+                        <p>Subject captured from ~1ft away. Note the "bulbous" nose effect and receding ears relative to
+                            the face.</p>
                     </div>
                 </article>
                 <article class="photo-card">
                     <img src="assets/images/face_far.png" alt="Far telephoto face">
                     <div class="photo-info">
                         <h3>Far Range (Telephoto)</h3>
-                        <p>Subject captured from ~10ft away. Features appear flattened and more proportionate to reality.</p>
+                        <p>Subject captured from ~10ft away. Features appear flattened and more proportionate to
+                            reality.</p>
                     </div>
                 </article>
             </div>
@@ -81,21 +88,24 @@
         <!-- Experiment 2 -->
         <section id="exp2">
             <h2 class="section-title">02. Scene Compression</h2>
-            <p class="section-desc">Demonstrating Z-axis compression. Long focal lengths compress the perceived distance between foreground and background objects.</p>
-            
+            <p class="section-desc">Demonstrating Z-axis compression. Long focal lengths compress the perceived distance
+                between foreground and background objects.</p>
+
             <div class="experiment-grid">
                 <article class="photo-card">
-                    <img src="assets/images/scene_tele.png" alt="Telephoto Street">
+                    <img src="assets/images/IMG_4678.HEIC" alt="Telephoto Street">
                     <div class="photo-info">
                         <h3>Telephoto Compression</h3>
-                        <p>High zoom from a distance. The background buildings appear looming and close to the foreground subjects.</p>
+                        <p>High zoom from a distance. The background buildings appear looming and close to the
+                            foreground subjects.</p>
                     </div>
                 </article>
                 <article class="photo-card">
-                    <img src="assets/images/scene_wide.png" alt="Wide Street">
+                    <img src="assets/images/IMG_4680.HEIC" alt="Wide Street">
                     <div class="photo-info">
                         <h3>Wide Angle Expansion</h3>
-                        <p>Standard view from closer range. The distance between objects is exaggerated, showing true depth.</p>
+                        <p>Standard view from closer range. The distance between objects is exaggerated, showing true
+                            depth.</p>
                     </div>
                 </article>
             </div>
@@ -120,8 +130,9 @@
         <!-- Experiment 3 -->
         <section id="exp3">
             <h2 class="section-title">03. Projective vs Orthographic</h2>
-            <p class="section-desc">Parallel lines converge to vanishing points in perspective projection, but remain parallel in orthographic (or pseudo-orthographic) views.</p>
-            
+            <p class="section-desc">Parallel lines converge to vanishing points in perspective projection, but remain
+                parallel in orthographic (or pseudo-orthographic) views.</p>
+
             <div class="experiment-grid">
                 <article class="photo-card">
                     <img src="assets/images/object_persp.png" alt="Perspective Box">
@@ -166,4 +177,5 @@
         lucide.createIcons();
     </script>
 </body>
+
 </html>
