@@ -58,7 +58,8 @@
                     <img src="assets/images/face_close.jpg" alt="Close up distorted face">
                     <div class="photo-info">
                         <h3>Close Range (Wide Angle)</h3>
-                        <p>Subject captured from ~1ft away. Note the "bulbous" nose effect and receding ears relative to
+                        <p>Captured from very close range. We can see the "bulbous" nose effect and receding ears
+                            relative to
                             the face.</p>
                     </div>
                 </article>
@@ -66,7 +67,7 @@
                     <img src="assets/images/face_far.jpg" alt="Far telephoto face">
                     <div class="photo-info">
                         <h3>Far Range (Telephoto)</h3>
-                        <p>Subject captured from ~10ft away. Features appear flattened and more proportionate to
+                        <p>Captured from far range. The facial features appear flattened and more proportionate to
                             reality.</p>
                     </div>
                 </article>
@@ -74,8 +75,8 @@
 
             <div class="voting-container" id="vote-exp1">
                 <div class="vote-info">
-                    <h4>Community Vote</h4>
-                    <p>Is this a clear demonstration of the concept?</p>
+                    <h4>Peer Vote</h4>
+
                 </div>
                 <div class="vote-controls">
                     <button class="vote-btn" data-type="down" onclick="window.vote('exp1', -1)">
@@ -92,32 +93,38 @@
         <!-- Experiment 2 -->
         <section id="exp2">
             <h2 class="section-title">02. Scene Compression</h2>
-            <p class="section-desc">Demonstrating Z-axis compression. Long focal lengths compress the perceived distance
-                between foreground and background objects.</p>
+            <p class="section-desc">When the camera is far from the scene, the depth differences between foreground and
+                background objects are small relative to the overall camera distance. As a result, objects at different
+                depths project to similar image sizes, making the scene appear flattened.
+
+                When the camera is closer, depth differences become more significant. Nearby objects appear much larger
+                than distant ones, enhancing depth cues and creating stronger perspective effects such as converging
+                lines and apparent scale variation.
+
+                Zooming only narrows the field of view and does not restore lost depth relationships.</p>
 
             <div class="experiment-grid">
                 <article class="photo-card">
                     <img src="assets/images/scene_tele_real.jpg" alt="Telephoto Street">
                     <div class="photo-info">
                         <h3>Telephoto Compression</h3>
-                        <p>High zoom from a distance. The background buildings appear looming and close to the
-                            foreground subjects.</p>
+                        <p>High zoom from a distance. The staircases appear flattened, without any depth cues.</p>
                     </div>
                 </article>
                 <article class="photo-card">
                     <img src="assets/images/scene_wide_real.jpg" alt="Wide Street">
                     <div class="photo-info">
                         <h3>Wide Angle Expansion</h3>
-                        <p>Standard view from closer range. The distance between objects is exaggerated, showing true
-                            depth.</p>
+                        <p>Standard view from closer range. The staircases appearr with more clear details of depth .
+                        </p>
                     </div>
                 </article>
             </div>
 
             <div class="voting-container" id="vote-exp2">
                 <div class="vote-info">
-                    <h4>Community Vote</h4>
-                    <p>Does this effectively show depth compression?</p>
+                    <h4>Peer Vote</h4>
+
                 </div>
                 <div class="vote-controls">
                     <button class="vote-btn" data-type="down" onclick="window.vote('exp2', -1)">
