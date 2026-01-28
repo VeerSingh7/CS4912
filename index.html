@@ -25,7 +25,7 @@
 
     <header>
         <div class="logo">Veer<span class="highlight">Vardhan</span>Singh <span
-                style="color:#666; font-weight:400; font-size: 0.9em; margin-left: 10px;">CS440</span></div>
+                style="color:#666; font-weight:400; font-size: 0.9em; margin-left: 10px;">CS4912</span></div>
         <nav>
             <ul>
                 <li><a href="#exp1">Distortion</a></li>
@@ -44,9 +44,15 @@
         <!-- Experiment 1 -->
         <section id="exp1">
             <h2 class="section-title">01. Perspective Distortion</h2>
-            <p class="section-desc">Analyzing how focal length affects facial feature proportions. The closer the
-                camera, the more exaggerated the features appear due to perspective projection.</p>
+            <p class="section-desc">When the camera is very close to the subject, parts of the face that are nearer to
+                the camera (such as the nose) are significantly closer than other parts (like the ears). Under
+                perspective projection, image size is inversely proportional to depth. As a result, nearer features
+                appear disproportionately larger, leading to facial distortion.
 
+                When the camera is moved farther away, the relative depth differences between facial features become
+                much smaller compared to the camera–scene distance. This reduces perspective distortion. Zooming in
+                afterward only changes the field of view, not the underlying geometry. Hence, the second portrait
+                preserves more realistic facial proportions.
             <div class="experiment-grid">
                 <article class="photo-card">
                     <img src="assets/images/face_close.jpg" alt="Close up distorted face">
@@ -130,7 +136,7 @@
     </main>
 
     <footer style="text-align: center; padding: 2rem; color: #666; border-top: 1px solid #333;">
-        <p>COMS 4995 Computer Vision &bull; Veer Vardhan Singh</p>
+        <p>CS4912 Computer Vision &bull; Veer Vardhan Singh</p>
     </footer>
 
     <script>
