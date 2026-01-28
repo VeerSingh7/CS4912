@@ -1,148 +1,62 @@
-// Import Firebase SDKs
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// Simple Local Storage Voting System
 
-// --- CONFIGURATION ---
-// TODO: Replace with your actual Firebase project config
-const firebaseConfig = {
-    apiKey: "AIzaSy_YOUR_API_KEY_HERE",
-    authDomain: "your-project.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef"
-};
+// Configuration
+const TASKS = ['exp1', 'exp2', 'exp3'];
 
-// Check if using placeholder config
-const isMockMode = firebaseConfig.projectId === "your-project-id";
-
-// Initialize Firebase
-let app, db;
-
-if (!isMockMode) {
-    try {
-        app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        console.log("Firebase initialized");
-    } catch (e) {
-        console.warn("Firebase initialization failed.", e);
-    }
-} else {
-    console.warn("Using MOCK MODE (LocalStorage) because Firebase config is missing. Votes will be saved locally only.");
-}
-
-// Global User State (Anonymous ID)
-let currentUserId = localStorage.getItem("cv_visitor_id");
-if (!currentUserId) {
-    currentUserId = 'anon_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem("cv_visitor_id", currentUserId);
-}
-console.log("User ID:", currentUserId);
-
-
-// --- VOTING LOGIC ---
+// Initialize UI on load
+document.addEventListener('DOMContentLoaded', () => {
+    TASKS.forEach(taskId => {
+        updateUI(taskId);
+        checkIfVoted(taskId);
+    });
+});
 
 // Expose vote function globally
-window.vote = async function (taskId, value) {
-
-    // MOCK MODE HANDLER
-    if (isMockMode) {
-        handleMockVote(taskId, value);
+window.vote = function (taskId, value) {
+    // 1. Check if already voted
+    if (localStorage.getItem(`voted_${taskId}`)) {
+        alert("You have already voted on this task!");
         return;
     }
 
-    // REAL FIREBASE HANDLER
-    if (!db) {
-        alert("Database not connected. Check console.");
-        return;
-    }
+    // 2. Update Count
+    const countKey = `count_${taskId}`;
+    let currentCount = parseInt(localStorage.getItem(countKey) || "0");
+    currentCount += value;
+    localStorage.setItem(countKey, currentCount);
 
-    const voteId = `${currentUserId}_${taskId}`;
-    const taskRef = doc(db, "tasks", taskId);
-    const voteRef = doc(db, "votes", voteId);
-
-    try {
-        const voteSnap = await getDoc(voteRef);
-
-        let previousValue = 0;
-        if (voteSnap.exists()) {
-            previousValue = voteSnap.data().voteValue;
-        }
-
-        // Write the vote
-        await setDoc(voteRef, {
-            userId: currentUserId,
-            voteValue: value,
-            taskId: taskId,
-            timestamp: serverTimestamp()
-        });
-
-        // Update aggregate score
-        const diff = value - previousValue;
-        if (diff !== 0) {
-            // Create task doc if not exists
-            await setDoc(taskRef, { id: taskId }, { merge: true });
-            await updateDoc(taskRef, {
-                score: increment(diff)
-            });
-        }
-
-    } catch (e) {
-        console.error("Voting failed", e);
-    }
-};
-
-
-// --- REALTIME LISTENERS ---
-
-const tasks = ['exp1', 'exp2', 'exp3'];
-
-// Firebase Listeners
-if (!isMockMode && db) {
-    tasks.forEach(taskId => {
-        onSnapshot(doc(db, "tasks", taskId), (doc) => {
-            updateCountUI(taskId, doc.exists() ? doc.data().score : 0);
-        });
-    });
-} else {
-    // Initial Mock Load
-    tasks.forEach(taskId => {
-        const mockScore = parseInt(localStorage.getItem(`mock_score_${taskId}`) || "0");
-        updateCountUI(taskId, mockScore);
-    });
-}
-
-// UI Helper
-function updateCountUI(taskId, score) {
-    const el = document.getElementById(`count-${taskId}`);
-    if (el) {
-        el.textContent = score || 0;
-        if ((score || 0) > 0) el.style.color = "var(--success)";
-        else if ((score || 0) < 0) el.style.color = "var(--error)";
-        else el.style.color = "var(--text-primary)";
-    }
-}
-
-// --- MOCK IMPLEMENTATION ---
-function handleMockVote(taskId, value) {
-    // 1. Get user's previous vote for this task
-    const userVoteKey = `mock_vote_${currentUserId}_${taskId}`;
-    const prevVote = parseInt(localStorage.getItem(userVoteKey) || "0");
-
-    // 2. Update user's vote
-    localStorage.setItem(userVoteKey, value);
-
-    // 3. Update total score
-    const taskScoreKey = `mock_score_${taskId}`;
-    let currentScore = parseInt(localStorage.getItem(taskScoreKey) || "0");
-
-    const diff = value - prevVote;
-    currentScore += diff;
-
-    localStorage.setItem(taskScoreKey, currentScore);
+    // 3. Mark as voted to prevent multiple votes
+    localStorage.setItem(`voted_${taskId}`, "true");
 
     // 4. Update UI
-    updateCountUI(taskId, currentScore);
+    updateUI(taskId);
+    checkIfVoted(taskId);
+};
 
-    console.log(`[Mock] Voted ${value} for ${taskId}. New Score: ${currentScore}`);
+function updateUI(taskId) {
+    const el = document.getElementById(`count-${taskId}`);
+    if (el) {
+        const count = parseInt(localStorage.getItem(`count_${taskId}`) || "0");
+        el.textContent = count;
+
+        // Color coding
+        if (count > 0) el.style.color = "#00cc66"; // Success color
+        else if (count < 0) el.style.color = "#ff4d4d"; // Error color
+        else el.style.color = "inherit";
+    }
+}
+
+function checkIfVoted(taskId) {
+    if (localStorage.getItem(`voted_${taskId}`)) {
+        // Disable buttons for this task
+        const section = document.getElementById(`vote-${taskId}`);
+        if (section) {
+            const btns = section.querySelectorAll('.vote-btn');
+            btns.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.style.cursor = "not-allowed";
+            });
+        }
+    }
 }
