@@ -30,7 +30,6 @@
             <ul>
                 <li><a href="#exp1">Distortion</a></li>
                 <li><a href="#exp2">Compression</a></li>
-                <li><a href="#exp3">Projection</a></li>
             </ul>
         </nav>
 
@@ -38,9 +37,8 @@
 
     <main>
         <section class="hero">
-            <h1>Seeing the World through Geometry</h1>
-            <p>A collection of photography experiments demonstrating core Computer Vision principles: Perspective,
-                Projection, and Depth.</p>
+            <h1>Assignment - 0</h1>
+
         </section>
 
         <!-- Experiment 1 -->
@@ -127,45 +125,7 @@
             </div>
         </section>
 
-        <!-- Experiment 3 -->
-        <section id="exp3">
-            <h2 class="section-title">03. Projective vs Orthographic</h2>
-            <p class="section-desc">Parallel lines converge to vanishing points in perspective projection, but remain
-                parallel in orthographic (or pseudo-orthographic) views.</p>
 
-            <div class="experiment-grid">
-                <article class="photo-card">
-                    <img src="assets/images/object_persp.png" alt="Perspective Box">
-                    <div class="photo-info">
-                        <h3>Perspective Projection</h3>
-                        <p>Standard shot. Red lines indicate convergence towards vanishing points.</p>
-                    </div>
-                </article>
-                <article class="photo-card">
-                    <img src="assets/images/object_ortho.png" alt="Orthographic Box">
-                    <div class="photo-info">
-                        <h3>Pseudo-Orthographic</h3>
-                        <p>Telephoto shot from distance. Lines appear nearly parallel, mimicking an isometric view.</p>
-                    </div>
-                </article>
-            </div>
-
-            <div class="voting-container" id="vote-exp3">
-                <div class="vote-info">
-                    <h4>Community Vote</h4>
-                    <p>Are the vanishing points correctly annotated?</p>
-                </div>
-                <div class="vote-controls">
-                    <button class="vote-btn" data-type="down" onclick="window.vote('exp3', -1)">
-                        <i data-lucide="arrow-down"></i>
-                    </button>
-                    <span class="vote-count" id="count-exp3">0</span>
-                    <button class="vote-btn" data-type="up" onclick="window.vote('exp3', 1)">
-                        <i data-lucide="arrow-up"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
 
     </main>
 
