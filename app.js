@@ -13,14 +13,22 @@ const firebaseConfig = {
     appId: "1:123456789:web:abcdef"
 };
 
+// Check if using placeholder config
+const isMockMode = firebaseConfig.projectId === "your-project-id";
+
 // Initialize Firebase
 let app, db;
-try {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    console.log("Firebase initialized");
-} catch (e) {
-    console.warn("Firebase initialization failed. Voting will be disabled.", e);
+
+if (!isMockMode) {
+    try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        console.log("Firebase initialized");
+    } catch (e) {
+        console.warn("Firebase initialization failed.", e);
+    }
+} else {
+    console.warn("Using MOCK MODE (LocalStorage) because Firebase config is missing. Votes will be saved locally only.");
 }
 
 // Global User State (Anonymous ID)
@@ -36,6 +44,14 @@ console.log("User ID:", currentUserId);
 
 // Expose vote function globally
 window.vote = async function (taskId, value) {
+
+    // MOCK MODE HANDLER
+    if (isMockMode) {
+        handleMockVote(taskId, value);
+        return;
+    }
+
+    // REAL FIREBASE HANDLER
     if (!db) {
         alert("Database not connected. Check console.");
         return;
@@ -73,7 +89,6 @@ window.vote = async function (taskId, value) {
 
     } catch (e) {
         console.error("Voting failed", e);
-        // alert("Error saving vote: " + e.message);
     }
 };
 
@@ -82,18 +97,52 @@ window.vote = async function (taskId, value) {
 
 const tasks = ['exp1', 'exp2', 'exp3'];
 
-tasks.forEach(taskId => {
-    if (!db) return;
-
-    onSnapshot(doc(db, "tasks", taskId), (doc) => {
-        const el = document.getElementById(`count-${taskId}`);
-        if (doc.exists() && el) {
-            const data = doc.data();
-            el.textContent = data.score || 0;
-
-            if ((data.score || 0) > 0) el.style.color = "var(--success)";
-            else if ((data.score || 0) < 0) el.style.color = "var(--error)";
-            else el.style.color = "var(--text-primary)";
-        }
+// Firebase Listeners
+if (!isMockMode && db) {
+    tasks.forEach(taskId => {
+        onSnapshot(doc(db, "tasks", taskId), (doc) => {
+            updateCountUI(taskId, doc.exists() ? doc.data().score : 0);
+        });
     });
-});
+} else {
+    // Initial Mock Load
+    tasks.forEach(taskId => {
+        const mockScore = parseInt(localStorage.getItem(`mock_score_${taskId}`) || "0");
+        updateCountUI(taskId, mockScore);
+    });
+}
+
+// UI Helper
+function updateCountUI(taskId, score) {
+    const el = document.getElementById(`count-${taskId}`);
+    if (el) {
+        el.textContent = score || 0;
+        if ((score || 0) > 0) el.style.color = "var(--success)";
+        else if ((score || 0) < 0) el.style.color = "var(--error)";
+        else el.style.color = "var(--text-primary)";
+    }
+}
+
+// --- MOCK IMPLEMENTATION ---
+function handleMockVote(taskId, value) {
+    // 1. Get user's previous vote for this task
+    const userVoteKey = `mock_vote_${currentUserId}_${taskId}`;
+    const prevVote = parseInt(localStorage.getItem(userVoteKey) || "0");
+
+    // 2. Update user's vote
+    localStorage.setItem(userVoteKey, value);
+
+    // 3. Update total score
+    const taskScoreKey = `mock_score_${taskId}`;
+    let currentScore = parseInt(localStorage.getItem(taskScoreKey) || "0");
+
+    const diff = value - prevVote;
+    currentScore += diff;
+
+    localStorage.setItem(taskScoreKey, currentScore);
+
+    // 4. Update UI
+    updateCountUI(taskId, currentScore);
+
+    console.log(`[Mock] Voted ${value} for ${taskId}. New Score: ${currentScore}`);
+}
