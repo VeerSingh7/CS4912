@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Vision Portfolio - Veer Vardhan Singh</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDKs -->
+    <script type="module" src="app.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">Veer<span class="highlight">Vardhan</span>Singh <span
+                style="color:#666; font-weight:400; font-size: 0.9em; margin-left: 10px;">CS4912</span></div>
+        <nav>
+            <ul>
+                <li><a href="#exp1">Distortion</a></li>
+                <li><a href="#exp2">Compression</a></li>
+            </ul>
+        </nav>
+
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Assignment - 0</h1>
+
+        </section>
+
+        <!-- Experiment 1 -->
+        <section id="exp1">
+            <h2 class="section-title">01. Perspective Distortion</h2>
+            <p class="section-desc">When the camera is very close to the subject, parts of the face that are nearer to
+                the camera (such as the nose) are significantly closer than other parts (like the ears). Under
+                perspective projection, image size is inversely proportional to depth. As a result, nearer features
+                appear disproportionately larger, leading to facial distortion.
+
+                When the camera is moved farther away, the relative depth differences between facial features become
+                much smaller compared to the camera–scene distance. This reduces perspective distortion. Zooming in
+                afterward only changes the field of view, not the underlying geometry. Hence, the second portrait
+                preserves more realistic facial proportions.
+            <div class="experiment-grid">
+                <article class="photo-card">
+                    <img src="assets/images/face_close.jpg" alt="Close up distorted face">
+                    <div class="photo-info">
+                        <h3>Close Range (Wide Angle)</h3>
+                        <p>Captured from very close range. We can see the "bulbous" nose effect and receding ears
+                            relative to
+                            the face.</p>
+                    </div>
+                </article>
+                <article class="photo-card">
+                    <img src="assets/images/face_far.jpg" alt="Far telephoto face">
+                    <div class="photo-info">
+                        <h3>Far Range (Telephoto)</h3>
+                        <p>Captured from far range. The facial features appear flattened and more proportionate to
+                            reality.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="voting-container" id="vote-exp1">
+                <div class="vote-info">
+                    <h4>Peer Vote</h4>
+
+                </div>
+                <div class="vote-controls">
+                    <button class="vote-btn" data-type="down" onclick="window.vote('exp1', -1)">
+                        <i data-lucide="arrow-down"></i>
+                    </button>
+                    <span class="vote-count" id="count-exp1">0</span>
+                    <button class="vote-btn" data-type="up" onclick="window.vote('exp1', 1)">
+                        <i data-lucide="arrow-up"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experiment 2 -->
+        <section id="exp2">
+            <h2 class="section-title">02. Scene Compression</h2>
+            <p class="section-desc">When the camera is far from the scene, the depth differences between foreground and
+                background objects are small relative to the overall camera distance. As a result, objects at different
+                depths project to similar image sizes, making the scene appear flattened.
+
+                When the camera is closer, depth differences become more significant. Nearby objects appear much larger
+                than distant ones, enhancing depth cues and creating stronger perspective effects such as converging
+                lines and apparent scale variation.
+
+                Zooming only narrows the field of view and does not restore lost depth relationships.</p>
+
+            <div class="experiment-grid">
+                <article class="photo-card">
+                    <img src="assets/images/scene_tele_real.jpg" alt="Telephoto Street">
+                    <div class="photo-info">
+                        <h3>Telephoto Compression</h3>
+                        <p>High zoom from a distance. The staircases appear flattened, without any depth cues.</p>
+                    </div>
+                </article>
+                <article class="photo-card">
+                    <img src="assets/images/scene_wide_real.jpg" alt="Wide Street">
+                    <div class="photo-info">
+                        <h3>Wide Angle Expansion</h3>
+                        <p>Standard view from closer range. The staircases appearr with more clear details of depth .
+                        </p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="voting-container" id="vote-exp2">
+                <div class="vote-info">
+                    <h4>Peer Vote</h4>
+
+                </div>
+                <div class="vote-controls">
+                    <button class="vote-btn" data-type="down" onclick="window.vote('exp2', -1)">
+                        <i data-lucide="arrow-down"></i>
+                    </button>
+                    <span class="vote-count" id="count-exp2">0</span>
+                    <button class="vote-btn" data-type="up" onclick="window.vote('exp2', 1)">
+                        <i data-lucide="arrow-up"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: #666; border-top: 1px solid #333;">
+        <p>CS4912 Computer Vision &bull; Veer Vardhan Singh</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

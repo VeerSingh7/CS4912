@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 2 - Harris & SIFT - Veer Vardhan Singh</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .full-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 20px 0;
+            background: #fff;
+        }
+        .text-centered { text-align: center; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #1e1e1e;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #333;
+        }
+        th { background: #2a2a2a; }
+        .solution-section {
+            padding: 3rem 1rem;
+            max-width: 900px;
+            margin: auto;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">Assignment<span class="highlight"> 2</span> <span
+                style="color:#666; font-weight:400; font-size: 0.9em; margin-left: 10px;">CS4912</span></div>
+        <nav>
+            <ul>
+                <li><a href="index.html">← Back to Portfolio</a></li>
+                <li><a href="#partA">Harris Corners</a></li>
+                <li><a href="#partB">SIFT Matching</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" style="padding: 4rem 1rem;">
+            <h1>Harris Corner Detection & SIFT</h1>
+            <p>Evaluating feature descriptors through Precision-Recall and Consecutive vs Random Temporal Image Pairs.</p>
+        </section>
+
+        <!-- Part A -->
+        <section id="partA" class="solution-section">
+            <h2 class="section-title">A: Harris Corner Detection (10M + Bonus)</h2>
+            <p class="section-desc">Detecting corners in a high-resolution Ashoka University brick structure image using the Harris algorithm with Grid-based NMS, matched against ~50 manually annotated ground truth points (brick mortar T-junctions, wall edges).</p>
+            
+            <h3>1. Interactive Ground Truth & General Harris Response</h3>
+            <img class="full-img" src="Assignment-2/cv_output/gt_interactive_vis.png" alt="Ground Truth annotations">
+            
+            <p style="margin-top:20px; color: var(--text-secondary);">The fundamental trade-off is clearly visible: lower thresholds lead to much higher recall while sacrificing precision (because the image captures thousands of real structural corners beyond the 53 I hand-annotated). </p>
+
+            <h3>2. Thresholding Grid NMS</h3>
+            <div class="experiment-grid">
+                <article class="photo-card">
+                    <img src="Assignment-2/cv_output/a3_corners_t05_0.050.png" alt="Med Threshold">
+                    <div class="photo-info" style="padding: 1rem;">
+                        <h3>Threshold = 0.05</h3>
+                        <p>Balanced threshold retaining corners along the structural edges and key wall joints.</p>
+                    </div>
+                </article>
+                <article class="photo-card">
+                    <img src="Assignment-2/cv_output/a3_corners_t11_0.300.png" alt="High Threshold">
+                    <div class="photo-info" style="padding: 1rem;">
+                        <h3>Threshold = 0.30</h3>
+                        <p>High threshold limiting detections to only the highest response focal points.</p>
+                    </div>
+                </article>
+            </div>
+
+            <h3 style="margin-top: 2rem;">3. Precision-Recall Curve (Bonus)</h3>
+            <p>The area under the Precision-Recall curve was dynamically computed using numerical integration (trapezoidal rule). Precision remains bounded low due to the sheer volume of true-positive structural joints uncharacterized in the minimal ground truth vector.</p>
+            <img class="full-img" src="Assignment-2/cv_output/a4_precision_recall_curve.png" alt="PR Curve">
+        </section>
+
+        <!-- Part B -->
+        <section id="partB" class="solution-section">
+            <h2 class="section-title">B: SIFT Feature Matching (15M)</h2>
+            <p class="section-desc">Extracted ~20K SIFT keypoints from the 19 Oyla images around the garden soil stack. Compared brute-force Lowe's ratio test matching logic over 19 consecutive and 19 random pairs.</p>
+            
+            <h3>1. Matched Pair Visualizations</h3>
+            <div class="experiment-grid">
+                <article class="photo-card">
+                    <img src="Assignment-2/cv_output/b2_consec_00_oyla_0001.jpg_oyla_0003.jpg.png" alt="Consecutive Match">
+                    <div class="photo-info" style="padding: 1rem;">
+                        <h3>Consecutive Image Matching</h3>
+                        <p>Extremely high temporal visual coherence leads to ~6,000 matches per pair.</p>
+                    </div>
+                </article>
+                <article class="photo-card">
+                    <img src="Assignment-2/cv_output/b3_random_01_oyla_0003.jpg_oyla_0025.jpg.png" alt="Random Match">
+                    <div class="photo-info" style="padding: 1rem;">
+                        <h3>Random Frame Matching</h3>
+                        <p>Large topological offsets lead to < 200 matches mapping purely distinctive global structures.</p>
+                    </div>
+                </article>
+            </div>
+
+            <h3 style="margin-top: 3rem;">2. Technical Analysis & Cost Comparison</h3>
+            <img class="full-img" src="Assignment-2/cv_output/b4_comparison.png" alt="Cost comparison">
+            
+            <p style="margin-top: 1rem; color: var(--text-secondary);">
+                <strong>Why the Random Total Cost is Lower:</strong><br><br>
+                The total cost metric is artificially lowered for random pairs because it scales strictly with the total count of matches. Consecutive frames share substantial localized geometric contexts yielding an average of ~3,891 matches vs ~456 matches for random frames. <br><br>
+                However, looking at the <strong>Per-Match Distance</strong> tells the objective truth: The consecutive array (139.1 avg cost) is comprised of higher quality matched invariants compared to the random array (155.7 avg cost). Only the strongest, most global keypoints bridge large view discrepancies, resulting in a low absolute total matched quantity but much lower fidelity.
+            </p>
+            
+            <a href="https://github.com/VeerSingh7/CS4912/blob/main/Assignment-2/cv_assignment.py" style="display:block; margin: 3rem auto 0; width: 220px;" class="btn-primary text-centered" target="_blank">View Python Source Code</a>
+        </section>
+
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: #666; border-top: 1px solid #333;">
+        <p>CS4912 Computer Vision &bull; Veer Vardhan Singh</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
