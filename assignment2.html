@@ -24,16 +24,19 @@
             margin: 20px 0;
             background: #fff;
         }
+
         .solution-section {
             padding: 3rem 1rem;
             max-width: 960px;
             margin: auto;
             border-top: 1px solid var(--border-color);
         }
+
         .solution-section h3 {
             margin-top: 2.5rem;
             margin-bottom: 0.5rem;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -42,16 +45,26 @@
             border-radius: 12px;
             overflow: hidden;
         }
-        th, td {
+
+        th,
+        td {
             text-align: left;
             padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
             font-size: 0.92rem;
         }
-        th { background: #2a2a2a; font-weight: 600; }
-        tr:last-child td { border-bottom: none; }
+
+        th {
+            background: #2a2a2a;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
         .insight-box {
-            background: linear-gradient(135deg, rgba(0,229,255,0.08), rgba(0,163,255,0.06));
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(0, 163, 255, 0.06));
             border-left: 4px solid var(--accent);
             border-radius: 0 12px 12px 0;
             padding: 1.2rem 1.5rem;
@@ -59,13 +72,18 @@
             color: var(--text-secondary);
             line-height: 1.7;
         }
-        .insight-box strong { color: var(--text-primary); }
+
+        .insight-box strong {
+            color: var(--text-primary);
+        }
+
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
             margin: 1.5rem 0;
         }
+
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -73,6 +91,7 @@
             padding: 1.2rem;
             text-align: center;
         }
+
         .stat-card .stat-value {
             font-size: 1.8rem;
             font-weight: 800;
@@ -80,6 +99,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .stat-card .stat-label {
             font-size: 0.82rem;
             color: var(--text-secondary);
@@ -105,40 +125,116 @@
     <main>
         <section class="hero" style="padding: 4rem 1rem;">
             <h1>Harris Corner Detection & SIFT Feature Matching</h1>
-            <p>Evaluating classical feature detection through Precision-Recall analysis and comparing temporal coherence in SIFT descriptors across consecutive vs random image pairs.</p>
+            <p>Evaluating classical feature detection through Precision-Recall analysis and comparing temporal coherence
+                in SIFT descriptors across consecutive vs random image pairs.</p>
         </section>
 
         <!-- ====== PART A ====== -->
         <section id="partA" class="solution-section">
-            <h2 class="section-title">Part A: Harris Corner Detection (10M + 5M Bonus)</h2>
+            <h2 class="section-title">Part A</h2>
 
             <h3>1. Image & Ground Truth Annotation</h3>
-            <p class="section-desc">A brick bench/wall structure at Ashoka University was chosen for its abundance of mortar T-junctions and structural edges. <strong>60 corners</strong> were manually annotated using an interactive <code>plt.ginput</code> tool — clicking directly on brick mortar joints, capstone edges, and structural wall corners.</p>
+            <p class="section-desc">A brick bench/wall structure at Ashoka University was chosen for its abundance of
+                mortar T-junctions and structural edges. <strong>60 corners</strong> were manually annotated using an
+                interactive <code>plt.ginput</code> tool — clicking directly on brick mortar joints, capstone edges, and
+                structural wall corners.</p>
 
-            <img class="full-img" src="Assignment-2/cv_output/gt_interactive_vis.png" alt="60 hand-annotated ground truth corners">
+            <img class="full-img" src="Assignment-2/cv_output/gt_interactive_vis.png"
+                alt="60 hand-annotated ground truth corners">
 
             <h3>2. Harris Response Map</h3>
-            <p class="section-desc">The <code>cv2.cornerHarris</code> function was applied with blockSize=2, ksize=3, k=0.04. The response heatmap confirms strong activations at brick mortar joints and structural edges — exactly the regions that were annotated.</p>
-            <img class="full-img" src="Assignment-2/cv_output/a2_harris_response.png" alt="Harris corner response heatmap">
+            <p class="section-desc">The <code>cv2.cornerHarris</code> function was applied with blockSize=2, ksize=3,
+                k=0.04. The response heatmap confirms strong activations at brick mortar joints and structural edges —
+                exactly the regions that were annotated.</p>
+            <img class="full-img" src="Assignment-2/cv_output/a2_harris_response.png"
+                alt="Harris corner response heatmap">
 
             <h3>3. Thresholded Detection & Precision-Recall</h3>
-            <p class="section-desc" style="max-width: 100%;">Grid-based NMS (grid=40px) was applied to suppress redundant detections. Using greedy 1-to-1 matching with a 120px distance threshold, the following results were obtained:</p>
+            <p class="section-desc" style="max-width: 100%;">Grid-based NMS (grid=40px) was applied to suppress
+                redundant detections. Using greedy 1-to-1 matching with a 120px distance threshold, the following
+                results were obtained:</p>
 
             <table>
                 <thead>
-                    <tr><th>Threshold</th><th># Detected</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
+                    <tr>
+                        <th>Threshold</th>
+                        <th># Detected</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td>0.001</td><td>13,087</td><td>0.0046</td><td>1.0000</td><td>0.0091</td></tr>
-                    <tr><td>0.005</td><td>7,269</td><td>0.0077</td><td>0.9333</td><td>0.0153</td></tr>
-                    <tr><td>0.010</td><td>5,342</td><td>0.0092</td><td>0.8167</td><td>0.0181</td></tr>
-                    <tr><td>0.020</td><td>3,844</td><td>0.0107</td><td>0.6833</td><td>0.0210</td></tr>
-                    <tr><td>0.050</td><td>2,390</td><td>0.0130</td><td>0.5167</td><td>0.0253</td></tr>
-                    <tr><td>0.100</td><td>1,398</td><td>0.0150</td><td>0.3500</td><td>0.0288</td></tr>
-                    <tr><td>0.200</td><td>545</td><td>0.0073</td><td>0.0667</td><td>0.0132</td></tr>
-                    <tr><td>0.300</td><td>219</td><td>0.0000</td><td>0.0000</td><td>0.0000</td></tr>
-                    <tr><td>0.500</td><td>43</td><td>0.0000</td><td>0.0000</td><td>0.0000</td></tr>
-                    <tr><td>0.800</td><td>10</td><td>0.0000</td><td>0.0000</td><td>0.0000</td></tr>
+                    <tr>
+                        <td>0.001</td>
+                        <td>13,087</td>
+                        <td>0.0046</td>
+                        <td>1.0000</td>
+                        <td>0.0091</td>
+                    </tr>
+                    <tr>
+                        <td>0.005</td>
+                        <td>7,269</td>
+                        <td>0.0077</td>
+                        <td>0.9333</td>
+                        <td>0.0153</td>
+                    </tr>
+                    <tr>
+                        <td>0.010</td>
+                        <td>5,342</td>
+                        <td>0.0092</td>
+                        <td>0.8167</td>
+                        <td>0.0181</td>
+                    </tr>
+                    <tr>
+                        <td>0.020</td>
+                        <td>3,844</td>
+                        <td>0.0107</td>
+                        <td>0.6833</td>
+                        <td>0.0210</td>
+                    </tr>
+                    <tr>
+                        <td>0.050</td>
+                        <td>2,390</td>
+                        <td>0.0130</td>
+                        <td>0.5167</td>
+                        <td>0.0253</td>
+                    </tr>
+                    <tr>
+                        <td>0.100</td>
+                        <td>1,398</td>
+                        <td>0.0150</td>
+                        <td>0.3500</td>
+                        <td>0.0288</td>
+                    </tr>
+                    <tr>
+                        <td>0.200</td>
+                        <td>545</td>
+                        <td>0.0073</td>
+                        <td>0.0667</td>
+                        <td>0.0132</td>
+                    </tr>
+                    <tr>
+                        <td>0.300</td>
+                        <td>219</td>
+                        <td>0.0000</td>
+                        <td>0.0000</td>
+                        <td>0.0000</td>
+                    </tr>
+                    <tr>
+                        <td>0.500</td>
+                        <td>43</td>
+                        <td>0.0000</td>
+                        <td>0.0000</td>
+                        <td>0.0000</td>
+                    </tr>
+                    <tr>
+                        <td>0.800</td>
+                        <td>10</td>
+                        <td>0.0000</td>
+                        <td>0.0000</td>
+                        <td>0.0000</td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -148,14 +244,16 @@
                     <img src="Assignment-2/cv_output/a3_corners_t00_0.001.png" alt="Low Threshold">
                     <div class="photo-info" style="padding: 1rem;">
                         <h3>Threshold = 0.001</h3>
-                        <p>13,087 detections — 100% recall but flooded with false positives from foliage, wood grain, and ground textures.</p>
+                        <p>13,087 detections — 100% recall but flooded with false positives from foliage, wood grain,
+                            and ground textures.</p>
                     </div>
                 </article>
                 <article class="photo-card">
                     <img src="Assignment-2/cv_output/a3_corners_t05_0.050.png" alt="Med Threshold">
                     <div class="photo-info" style="padding: 1rem;">
                         <h3>Threshold = 0.050</h3>
-                        <p>2,390 detections — 51.7% recall. Most brick wall corners are still detected, while ground noise is suppressed.</p>
+                        <p>2,390 detections — 51.7% recall. Most brick wall corners are still detected, while ground
+                            noise is suppressed.</p>
                     </div>
                 </article>
                 <article class="photo-card">
@@ -169,13 +267,15 @@
                     <img src="Assignment-2/cv_output/a3_corners_t11_0.300.png" alt="High Threshold">
                     <div class="photo-info" style="padding: 1rem;">
                         <h3>Threshold = 0.300</h3>
-                        <p>219 detections — 0% recall. Only the absolute strongest responses remain, none matching annotated GT.</p>
+                        <p>219 detections — 0% recall. Only the absolute strongest responses remain, none matching
+                            annotated GT.</p>
                     </div>
                 </article>
             </div>
 
-            <h3>5. Precision-Recall Curve & AUC (Bonus)</h3>
-            <img class="full-img" src="Assignment-2/cv_output/a4_precision_recall_curve.png" alt="Precision-Recall curve with AUC">
+            <h3>5. Precision-Recall Curve & AUC </h3>
+            <img class="full-img" src="Assignment-2/cv_output/a4_precision_recall_curve.png"
+                alt="Precision-Recall curve with AUC">
 
             <div class="stat-grid">
                 <div class="stat-card">
@@ -198,55 +298,110 @@
 
             <div class="insight-box">
                 <strong>Key Observations:</strong><br>
-                1. <strong>Recall decreases monotonically</strong> from 100% to 0% as threshold increases — expected since fewer corners survive.<br>
-                2. <strong>Precision remains uniformly low</strong> (peak ~1.5%) because Harris detects thousands of real corners (mortar joints, wood grain) that were NOT part of the 60 annotated GT points. These are true corners but count as "false positives".<br>
-                3. <strong>AUC = 0.0108</strong> is low but expected — a denser annotation (500+ corners) would yield significantly higher precision across all thresholds.<br>
-                4. <strong>Best F1 = 0.0288</strong> occurs at threshold 0.10, representing the optimal tradeoff: 1,398 detections capturing 35% of GT corners.<br>
-                5. At t ≥ 0.30, <strong>no GT corners are detected</strong> — the strongest Harris responses are concentrated in the foliage/red-wall textures where no GT corners were placed.
+                1. <strong>Recall decreases monotonically</strong> from 100% to 0% as threshold increases — expected
+                since fewer corners survive.<br>
+                2. <strong>Precision remains uniformly low</strong> (peak ~1.5%) because Harris detects thousands of
+                real corners (mortar joints, wood grain) that were NOT part of the 60 annotated GT points. These are
+                true corners but count as "false positives".<br>
+                3. <strong>AUC = 0.0108</strong> is low but expected — a denser annotation (500+ corners) would yield
+                significantly higher precision across all thresholds.<br>
+                4. <strong>Best F1 = 0.0288</strong> occurs at threshold 0.10, representing the optimal tradeoff: 1,398
+                detections capturing 35% of GT corners.<br>
+                5. At t ≥ 0.30, <strong>no GT corners are detected</strong> — the strongest Harris responses are
+                concentrated in the foliage/red-wall textures where no GT corners were placed.
             </div>
         </section>
 
         <!-- ====== PART B ====== -->
         <section id="partB" class="solution-section">
-            <h2 class="section-title">Part B: SIFT Feature Matching (15M)</h2>
-            <p class="section-desc" style="max-width: 100%;">19 images of a mulch/garden soil stack (Miracle-Gro bags) captured with a camera orbiting the stack. SIFT keypoints (~10K–22K per image, 128-D descriptors) were extracted and matched using BFMatcher with Lowe's ratio test (threshold = 0.75).</p>
+            <h2 class="section-title">Part B</h2>
+            <p class="section-desc" style="max-width: 100%;">19 images of a mulch/garden soil stack (Miracle-Gro bags)
+                captured with a camera orbiting the stack. SIFT keypoints (~10K–22K per image, 128-D descriptors) were
+                extracted and matched using BFMatcher with Lowe's ratio test (threshold = 0.75).</p>
 
             <h3>1. Consecutive Pair Matching (19 pairs)</h3>
-            <p class="section-desc" style="max-width: 100%;">Each image is matched against the next in the sequence (including the circular wrap-around pair oyla_0037 → oyla_0001).</p>
+            <p class="section-desc" style="max-width: 100%;">Each image is matched against the next in the sequence
+                (including the circular wrap-around pair oyla_0037 → oyla_0001).</p>
 
             <table>
                 <thead>
-                    <tr><th>Pair</th><th># Matches</th><th>Total Cost</th></tr>
+                    <tr>
+                        <th>Pair</th>
+                        <th># Matches</th>
+                        <th>Total Cost</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td>(oyla_0001, oyla_0003)</td><td>6,230</td><td>887,318</td></tr>
-                    <tr><td>(oyla_0003, oyla_0005)</td><td>6,707</td><td>902,713</td></tr>
-                    <tr><td>(oyla_0005, oyla_0007)</td><td>6,219</td><td>925,140</td></tr>
-                    <tr><td>(oyla_0007, oyla_0009)</td><td>5,067</td><td>788,913</td></tr>
-                    <tr><td>(oyla_0009, oyla_0011)</td><td>8,456</td><td>1,188,293</td></tr>
-                    <tr><td>(oyla_0013, oyla_0015)</td><td>12,115</td><td>960,387</td></tr>
-                    <tr><td>(oyla_0025, oyla_0027)</td><td>1,851</td><td>298,157</td></tr>
-                    <tr><td>(oyla_0035, oyla_0037)</td><td>608</td><td>102,544</td></tr>
+                    <tr>
+                        <td>(oyla_0001, oyla_0003)</td>
+                        <td>6,230</td>
+                        <td>887,318</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0003, oyla_0005)</td>
+                        <td>6,707</td>
+                        <td>902,713</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0005, oyla_0007)</td>
+                        <td>6,219</td>
+                        <td>925,140</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0007, oyla_0009)</td>
+                        <td>5,067</td>
+                        <td>788,913</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0009, oyla_0011)</td>
+                        <td>8,456</td>
+                        <td>1,188,293</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0013, oyla_0015)</td>
+                        <td>12,115</td>
+                        <td>960,387</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0025, oyla_0027)</td>
+                        <td>1,851</td>
+                        <td>298,157</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0035, oyla_0037)</td>
+                        <td>608</td>
+                        <td>102,544</td>
+                    </tr>
                     <tr style="font-weight:700; border-top: 2px solid var(--accent);">
-                        <td>(oyla_0037, oyla_0001) ← wrap</td><td>51</td><td>9,000</td></tr>
+                        <td>(oyla_0037, oyla_0001) ← wrap</td>
+                        <td>51</td>
+                        <td>9,000</td>
+                    </tr>
                     <tr style="background: #2a2a2a; font-weight: 700;">
-                        <td>TOTAL / AVERAGE</td><td>73,923 / 3,891</td><td>10,283,238 / 541,223</td></tr>
+                        <td>TOTAL / AVERAGE</td>
+                        <td>73,923 / 3,891</td>
+                        <td>10,283,238 / 541,223</td>
+                    </tr>
                 </tbody>
             </table>
 
             <div class="experiment-grid">
                 <article class="photo-card">
-                    <img src="Assignment-2/cv_output/b2_consec_00_oyla_0001.jpg_oyla_0003.jpg.png" alt="Consecutive Match">
+                    <img src="Assignment-2/cv_output/b2_consec_00_oyla_0001.jpg_oyla_0003.jpg.png"
+                        alt="Consecutive Match">
                     <div class="photo-info" style="padding: 1rem;">
                         <h3>Consecutive: oyla_0001 ↔ oyla_0003</h3>
-                        <p>6,230 good matches. Dense horizontal match lines confirm high visual overlap between temporally adjacent frames.</p>
+                        <p>6,230 good matches. Dense horizontal match lines confirm high visual overlap between
+                            temporally adjacent frames.</p>
                     </div>
                 </article>
                 <article class="photo-card">
-                    <img src="Assignment-2/cv_output/b2_consec_18_oyla_0037.jpg_oyla_0001.jpg.png" alt="Wrap-around pair">
+                    <img src="Assignment-2/cv_output/b2_consec_18_oyla_0037.jpg_oyla_0001.jpg.png"
+                        alt="Wrap-around pair">
                     <div class="photo-info" style="padding: 1rem;">
                         <h3>Wrap-around: oyla_0037 ↔ oyla_0001</h3>
-                        <p>Only 51 matches — camera has orbited nearly 360° so these frames see opposite sides of the stack.</p>
+                        <p>Only 51 matches — camera has orbited nearly 360° so these frames see opposite sides of the
+                            stack.</p>
                     </div>
                 </article>
             </div>
@@ -255,34 +410,68 @@
 
             <table>
                 <thead>
-                    <tr><th>Pair</th><th># Matches</th><th>Total Cost</th></tr>
+                    <tr>
+                        <th>Pair</th>
+                        <th># Matches</th>
+                        <th>Total Cost</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td>(oyla_0029, oyla_0035)</td><td>188</td><td>28,883</td></tr>
-                    <tr><td>(oyla_0003, oyla_0025)</td><td>121</td><td>21,966</td></tr>
-                    <tr><td>(oyla_0001, oyla_0015)</td><td>157</td><td>28,442</td></tr>
-                    <tr><td>(oyla_0005, oyla_0007)*</td><td>6,219</td><td>925,140</td></tr>
-                    <tr><td>(oyla_0003, oyla_0021)</td><td>53</td><td>9,570</td></tr>
-                    <tr><td>(oyla_0001, oyla_0019)</td><td>76</td><td>13,017</td></tr>
+                    <tr>
+                        <td>(oyla_0029, oyla_0035)</td>
+                        <td>188</td>
+                        <td>28,883</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0003, oyla_0025)</td>
+                        <td>121</td>
+                        <td>21,966</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0001, oyla_0015)</td>
+                        <td>157</td>
+                        <td>28,442</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0005, oyla_0007)*</td>
+                        <td>6,219</td>
+                        <td>925,140</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0003, oyla_0021)</td>
+                        <td>53</td>
+                        <td>9,570</td>
+                    </tr>
+                    <tr>
+                        <td>(oyla_0001, oyla_0019)</td>
+                        <td>76</td>
+                        <td>13,017</td>
+                    </tr>
                     <tr style="background: #2a2a2a; font-weight: 700;">
-                        <td>TOTAL / AVERAGE</td><td>8,660 / 456</td><td>1,349,139 / 71,007</td></tr>
+                        <td>TOTAL / AVERAGE</td>
+                        <td>8,660 / 456</td>
+                        <td>1,349,139 / 71,007</td>
+                    </tr>
                 </tbody>
             </table>
-            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: -10px;">*Random selection coincidentally picked consecutive pair (0005, 0007), inflating the average.</p>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: -10px;">*Random selection
+                coincidentally picked consecutive pair (0005, 0007), inflating the average.</p>
 
             <div class="experiment-grid">
                 <article class="photo-card">
                     <img src="Assignment-2/cv_output/b3_random_01_oyla_0003.jpg_oyla_0025.jpg.png" alt="Random Match">
                     <div class="photo-info" style="padding: 1rem;">
                         <h3>Random: oyla_0003 ↔ oyla_0025</h3>
-                        <p>Only 121 matches. Wild crossing lines reflect poor geometric consistency from vastly different viewpoints.</p>
+                        <p>Only 121 matches. Wild crossing lines reflect poor geometric consistency from vastly
+                            different viewpoints.</p>
                     </div>
                 </article>
                 <article class="photo-card">
                     <img src="Assignment-2/cv_output/b3_random_04_oyla_0007.jpg_oyla_0031.jpg.png" alt="Random Match 2">
                     <div class="photo-info" style="padding: 1rem;">
                         <h3>Random: oyla_0007 ↔ oyla_0031</h3>
-                        <p>113 matches — only globally distinctive features (logos, tree trunk) bridge the large viewpoint gap.</p>
+                        <p>113 matches — only globally distinctive features (logos, tree trunk) bridge the large
+                            viewpoint gap.</p>
                     </div>
                 </article>
             </div>
@@ -311,20 +500,33 @@
 
             <div class="insight-box">
                 <strong>Q: Is the total cost lower for consecutive (3) or random pairs (4)? Why?</strong><br><br>
-                <strong>The total cost for RANDOM pairs (1.35M) is LOWER than consecutive pairs (10.28M).</strong><br><br>
-                This is explained entirely by the <strong>number of matches</strong>, not the match quality. Consecutive pairs produce <strong>~9× more good matches</strong> on average (3,891 vs 456) because of high visual overlap between temporally adjacent frames. Since total cost = sum of all individual L2 descriptor distances, more matches naturally produce a higher total sum.<br><br>
+                <strong>The total cost for RANDOM pairs (1.35M) is LOWER than consecutive pairs
+                    (10.28M).</strong><br><br>
+                This is explained entirely by the <strong>number of matches</strong>, not the match quality. Consecutive
+                pairs produce <strong>~9× more good matches</strong> on average (3,891 vs 456) because of high visual
+                overlap between temporally adjacent frames. Since total cost = sum of all individual L2 descriptor
+                distances, more matches naturally produce a higher total sum.<br><br>
                 However, the <strong>per-match cost</strong> reveals the true quality:<br>
                 • <strong>Consecutive: 139.1</strong> avg distance per match (LOWER = better quality matches)<br>
                 • <strong>Random: 155.8</strong> avg distance per match (HIGHER = worse quality matches)<br><br>
                 <strong>Why consecutive pairs match better:</strong><br>
-                1. <strong>High visual overlap</strong> — camera moves slightly between frames, sharing 70–90% of the scene.<br>
-                2. <strong>Similar viewpoint</strong> — small angular changes keep SIFT descriptors highly similar, passing Lowe's ratio test easily.<br>
-                3. <strong>Lower descriptor distances</strong> — the same bag labels and edges appear from nearly identical angles.<br><br>
+                1. <strong>High visual overlap</strong> — camera moves slightly between frames, sharing 70–90% of the
+                scene.<br>
+                2. <strong>Similar viewpoint</strong> — small angular changes keep SIFT descriptors highly similar,
+                passing Lowe's ratio test easily.<br>
+                3. <strong>Lower descriptor distances</strong> — the same bag labels and edges appear from nearly
+                identical angles.<br><br>
                 <strong>Why random pairs have fewer matches:</strong><br>
-                1. Random pairs can view <strong>opposite sides</strong> of the mulch stack (0° vs 180°), sharing almost no common features.<br>
-                2. Large viewpoint changes cause most descriptors to differ significantly → most fail the ratio test.<br>
-                3. Only globally distinctive features (Miracle-Gro logo, tree trunk) can survive large view changes.<br><br>
-                <strong>Notable:</strong> The wrap-around pair (oyla_0037 → oyla_0001) has only <strong>51 matches</strong>, behaving like a random pair since the camera has orbited nearly full circle. One random pair (oyla_0005, oyla_0007) coincidentally is consecutive and has 6,219 matches — confirming that proximity, not randomness, determines match quality.
+                1. Random pairs can view <strong>opposite sides</strong> of the mulch stack (0° vs 180°), sharing almost
+                no common features.<br>
+                2. Large viewpoint changes cause most descriptors to differ significantly → most fail the ratio
+                test.<br>
+                3. Only globally distinctive features (Miracle-Gro logo, tree trunk) can survive large view
+                changes.<br><br>
+                <strong>Notable:</strong> The wrap-around pair (oyla_0037 → oyla_0001) has only <strong>51
+                    matches</strong>, behaving like a random pair since the camera has orbited nearly full circle. One
+                random pair (oyla_0005, oyla_0007) coincidentally is consecutive and has 6,219 matches — confirming that
+                proximity, not randomness, determines match quality.
             </div>
         </section>
 
