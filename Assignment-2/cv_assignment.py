@@ -8,10 +8,7 @@ Author: Veer Vardhan Singh
 
 import cv2
 import numpy as np
-import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend for saving plots
 import matplotlib.pyplot as plt
-import os
 import itertools
 import random
 from pathlib import Path
@@ -34,111 +31,41 @@ OYLA_DIR = os.path.join(SCRIPT_DIR, "oyla_images")
 # PART A: HARRIS CORNER DETECTION
 # ============================================================================
 
-def get_ground_truth_corners(img_shape):
+def get_ground_truth_corners(img):
     """
-    Manually annotated ~50 corners (ground truth) on the building image.
-    
-    These are (x, y) pixel coordinates of visible corners in the brick
-    building/bench image from Ashoka University. The image shows:
-    - A brick bench with wooden plank seating
-    - A red painted wall/structure behind with a hydrant pipe
-    - Stone/concrete cap on the brick wall
-    - Green bushes in the background
-    
-    Coordinates are specified as fractions of image dimensions, then 
-    converted to absolute pixels, so they work regardless of resolution.
-    
-    Corners annotated at:
-    - Brick mortar joint intersections (T-junctions and cross-junctions)
-    - Structural corners of the bench wall
-    - Wooden plank edges and joints
-    - Cap stone edges
-    - Red wall / hydrant pipe corners
+    Load ground truth from gt_corners.npy if it exists.
+    Otherwise, open an interactive window to manually click ~50 corners using plt.ginput.
     """
-    h, w = img_shape[:2]
+    gt_file = os.path.join(SCRIPT_DIR, 'gt_corners.npy')
+    if os.path.exists(gt_file):
+        print(f"    Loaded ground truth from {gt_file}")
+        return np.load(gt_file)
+        
+    print("\n    >>> INTERACTIVE ANNOTATION MODE <<<")
+    print("    Please click on ~50 real corners (brick mortar T-junctions, wall edges).")
+    print("    Left-click to add, Right-click to undo/finish early. Close window when done.")
     
-    # Ground truth corners as (x_frac, y_frac) of image dimensions.
-    # Carefully placed at actual BRICK MORTAR T-JUNCTIONS, structural 
-    # edges, and other real corners visible in the image.
-    # Based on visual inspection of the Harris response overlay.
-    corners_frac = [
-        # === LEFT WALL STRUCTURAL CORNERS (brick edges on left side) ===
-        (0.06, 0.38),   # 1: Top-left wall outer corner (cap/brick junction)
-        (0.10, 0.42),   # 2: Left wall inner corner at cap stone
-        (0.06, 0.47),   # 3: Left wall brick mortar junction
-        (0.08, 0.52),   # 4: Left wall brick mortar junction
-        (0.06, 0.57),   # 5: Left wall mortar T-junction
-        
-        # === BACK WALL BRICK MORTAR JOINTS (upper region, below capstone) ===
-        (0.14, 0.40),   # 6: Back wall brick corner near left
-        (0.20, 0.39),   # 7: Back wall mortar T-junction
-        (0.27, 0.38),   # 8: Back wall mortar junction
-        (0.35, 0.37),   # 9: Back wall mortar junction
-        (0.42, 0.36),   # 10: Back wall mortar junction
-        (0.50, 0.35),   # 11: Back wall mortar junction
-        (0.58, 0.34),   # 12: Back wall mortar junction
-        (0.66, 0.33),   # 13: Back wall mortar junction
-        
-        # === BACK WALL BRICK ROW 2 ===
-        (0.14, 0.44),   # 14: mortar T-junction
-        (0.22, 0.43),   # 15: mortar T-junction
-        (0.30, 0.42),   # 16: mortar T-junction
-        (0.38, 0.41),   # 17: mortar T-junction
-        (0.46, 0.40),   # 18: mortar T-junction
-        (0.54, 0.39),   # 19: mortar T-junction
-        (0.62, 0.38),   # 20: mortar T-junction
-        
-        # === RIGHT WALL BRICK MORTAR JOINTS ===
-        (0.75, 0.31),   # 21: Right wall upper brick corner
-        (0.82, 0.30),   # 22: Right wall upper brick corner
-        (0.88, 0.28),   # 23: Right wall upper mortar junction
-        (0.75, 0.36),   # 24: Right wall mid mortar junction
-        (0.82, 0.35),   # 25: Right wall mid mortar junction
-        (0.88, 0.34),   # 26: Right wall mid mortar junction
-        (0.75, 0.41),   # 27: Right wall lower mortar junction
-        (0.82, 0.40),   # 28: Right wall lower mortar junction
-        (0.92, 0.38),   # 29: Right wall edge mortar junction
-        
-        # === FRONT FACE BRICK MORTAR JOINTS (below bench seat) ===
-        # Row 1
-        (0.10, 0.57),   # 30: Front face upper mortar T-junction
-        (0.18, 0.56),   # 31: Front face mortar junction
-        (0.26, 0.55),   # 32: Front face mortar junction
-        (0.34, 0.72),   # 33: Front face lower mortar junction
-        (0.42, 0.71),   # 34: Front face lower mortar junction
-        # Row 2
-        (0.10, 0.63),   # 35: Front face mortar junction
-        (0.18, 0.62),   # 36: Front face mortar junction
-        (0.26, 0.61),   # 37: Front face mortar junction
-        # Row 3
-        (0.10, 0.70),   # 38: Lower front mortar junction
-        (0.18, 0.69),   # 39: Lower front mortar junction
-        (0.26, 0.68),   # 40: Lower front mortar junction
-        
-        # === CAP STONE EDGE CORNERS ===
-        (0.12, 0.34),   # 41: Capstone left edge 
-        (0.30, 0.32),   # 42: Capstone edge
-        (0.50, 0.30),   # 43: Capstone edge
-        (0.70, 0.27),   # 44: Capstone edge right
-        
-        # === RED WALL / HYDRANT STRUCTURAL CORNERS ===
-        (0.07, 0.28),   # 45: Red wall left bottom corner
-        (0.35, 0.10),   # 46: Red wall top edge
-        (0.50, 0.08),   # 47: Hydrant pipe corner
-        (0.55, 0.12),   # 48: Hydrant pipe bend
-        (0.07, 0.06),   # 49: Building brick corner (top left)
-        
-        # === BOTTOM ROW BRICK MORTAR JOINTS ===
-        (0.10, 0.77),   # 50: Bottom section mortar junction
-        (0.22, 0.76),   # 51: Bottom section mortar junction
-        (0.34, 0.82),   # 52: Bottom section lower mortar junction
-        (0.10, 0.84),   # 53: Bottom-left mortar junction
-    ]
+    plt.figure(figsize=(14, 10))
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.title("Click on ~50 corners, then right-click/press Enter to finish", fontsize=14)
+    points = plt.ginput(n=60, timeout=0)  
+    plt.close()
     
-    # Convert fractions to pixel coordinates
-    corners = [(int(xf * w), int(yf * h)) for xf, yf in corners_frac]
+    gt_corners = np.array(points, dtype=np.float32)
+    np.save(gt_file, gt_corners)
+    print(f"    Saved {len(gt_corners)} annotated corners to {gt_file}")
     
-    return np.array(corners, dtype=np.float32)
+    # Save a visualization of the new ground truth
+    plt.figure(figsize=(14, 10))
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.scatter(gt_corners[:, 0], gt_corners[:, 1], c='red', s=40, marker='x', linewidths=2)
+    plt.title(f"Interactive Ground Truth: {len(gt_corners)} corners")
+    vis_path = os.path.join(OUTPUT_DIR, 'gt_interactive_vis.png')
+    plt.savefig(vis_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"    Saved visualization to {vis_path}")
+    
+    return gt_corners
 
 
 def run_harris_corner_detection(image_path):
@@ -315,7 +242,7 @@ def run_part_a():
     
     # Step 2: Get ground truth annotations
     print("\n[Step 2] Loading manually annotated ground truth corners...")
-    gt_corners = get_ground_truth_corners(img.shape)
+    gt_corners = get_ground_truth_corners(img)
     print(f"    Number of ground truth corners: {len(gt_corners)}")
     
     # Adaptive distance threshold based on image resolution
